@@ -3,11 +3,22 @@ import 'modern-normalize'
 
 const colors = ['red', 'green', 'blue', 'pink', 'yellow', 'gray']
 
-const makeRandomPattern = () =>
-  Array.from({ length: columns }, () => {
+const makeRandomPattern = (repeating = true) => {
+  const pattern = []
+
+  while (pattern.length < columns) {
     const colorIndex = Math.floor(Math.random() * colors.length)
-    return colors[colorIndex]
-  })
+    const color = colors[colorIndex]
+
+    if (repeating === false && pattern.includes(color)) {
+      continue
+    }
+
+    pattern.push(color)
+  }
+
+  return pattern
+}
 
 const columns = 4
 const rows = 8
