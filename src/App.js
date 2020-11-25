@@ -1,68 +1,22 @@
 import React from 'react'
 import 'modern-normalize'
 
-const colors = [
-  'crimson',
-  'olivedrab',
-  'dodgerblue',
-  'deeppink',
-  'gold',
-  'coral',
-]
+import { generatePattern, getResult, colors } from './utils'
 
-const makeRandomPattern = (repeating = true) => {
-  const pattern = []
+const Game = ({ columns, rows, secretPattern }) => {
+  const [guesses, setGuesses] = React.useState([])
 
-  while (pattern.length < columns) {
-    const colorIndex = Math.floor(Math.random() * colors.length)
-    const color = colors[colorIndex]
-
-    if (repeating === false && pattern.includes(color)) {
-      continue
-    }
-
-    pattern.push(color)
-  }
-
-  return pattern
-}
-
-const columns = 4
-const rows = 8
-
-const patternToBeGuessed = makeRandomPattern()
-
-const getResult = (patternToBeGuessed, playerPattern) => {
-  return playerPattern
-    .map((pattern, index) => {
-      if (patternToBeGuessed[index] === pattern) {
-        return 'black'
-      } else if (patternToBeGuessed.includes(pattern)) {
-        return 'white'
-      }
-    })
-    .filter(Boolean)
-    .sort()
-}
-
-export default function App() {
-  const visibleColumns = columns + 2
-  const visibleRows = rows + 1
-  const [guesses, setGuesses] = React.useState([
-    makeRandomPattern(),
-    makeRandomPattern(),
-    makeRandomPattern(),
-    makeRandomPattern(),
-  ])
-  const results = guesses.map((guess) => getResult(patternToBeGuessed, guess))
+  const results = guesses.map((guess) => getResult(secretPattern, guess))
 
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${visibleColumns}, 50px)`,
-        gridTemplateRows: `repeat(${visibleRows}, 50px)`,
-        gridGap: 5,
+        '--slot-size': '100px',
+        display: 'inline-grid',
+        gridTemplateColumns: `var(--slot-size) repeat(${columns}, var(--slot-size)) var(--slot-size)`,
+        gridTemplateRows: `var(--slot-size) repeat(${rows}, var(--slot-size)) var(--slot-size)`,
+        gridGap: 10,
+        padding: 20,
       }}
     >
       <div
@@ -71,15 +25,15 @@ export default function App() {
         }}
       >
         <div />
-        {patternToBeGuessed.map((color) => (
+        {secretPattern.map((value, index) => (
           <div
             style={{
-              backgroundColor: color,
+              gridColumnStart: index + 2,
+              backgroundColor: colors[value],
               borderRadius: '50%',
             }}
           />
         ))}
-
         <div />
       </div>
 
@@ -94,31 +48,38 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              fontSize: 'calc(var(--slot-size) * 0.6)',
+              fontWeight: 'bold',
+              color: '#faecd7',
             }}
           >
             {length - rowIndex}
           </div>
 
-          {Array.from({ length: columns }).map((_, columnIndex) => (
-            <div
-              style={{
-                borderRadius: '50%',
-                backgroundColor:
-                  guesses[length - rowIndex - 1] &&
-                  guesses[length - rowIndex - 1][columnIndex],
-              }}
-            ></div>
-          ))}
+          {Array.from({ length: columns }).map((_, columnIndex) => {
+            const value =
+              guesses[length - rowIndex - 1] &&
+              guesses[length - rowIndex - 1][columnIndex]
+
+            return (
+              <div
+                style={{
+                  borderRadius: '50%',
+                  backgroundColor: colors[value] || '#faecd7',
+                }}
+              ></div>
+            )
+          })}
 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: `repeat(2, 1fr)`,
-              gridTemplateRows: `repeat(2, 1fr)`,
-              backgroundColor: 'antiquewhite',
+              gridTemplateColumns: `repeat(${columns / 2}, 1fr)`,
+              gridTemplateRows: `repeat(${columns / 2}, 1fr)`,
+              backgroundColor: '#faecd7',
               borderRadius: 5,
-              gridGap: 5,
-              padding: 5,
+              gridGap: 7,
+              padding: 7,
             }}
           >
             {results[length - rowIndex - 1] &&
@@ -136,6 +97,18 @@ export default function App() {
           </div>
         </div>
       ))}
+
+      <div />
+      {colors.map((color) => (
+        <div style={{ backgroundColor: color, borderRadius: '50%' }} />
+      ))}
     </div>
   )
 }
+
+const App = () => {
+  const columns = 4
+  return <Game columns={columns} rows={6} secretPattern={[1, 2, 3, 4]} />
+}
+
+export default App
