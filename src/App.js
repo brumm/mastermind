@@ -1,42 +1,134 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import { createPortal } from "react-dom";
+
 import "modern-normalize";
 
 import { generatePattern, getResult, colors } from "./utils";
 
-const SpecialCell = ({ clicked, children, amount }) => {
+const SpecialCell = ({ columnIndex }) => {
+  const [activeCell, setActiveCell] = useState(0);
+  const [position, setPosition] = useState(null);
+  const [cellBackgroundColor, setCellBackgroundColor] = useState("#faecd7");
+  const ref = React.useRef(null);
+
+  const setColor = (index, color) => {
+    setCellBackgroundColor(color);
+  };
+
+  const openColorPicker = (index) => {
+    setActiveCell(index);
+    setPosition((pos) => {
+      if (position === null) {
+        return ref.current.getBoundingClientRect();
+      }
+      return null;
+    });
+
+    return;
+  };
+
   return (
     <Fragment>
-      {Array.from({ length: amount }).map((_, columnIndex) => {
-        return (
+      <div
+        style={{
+          borderRadius: "50%",
+          backgroundColor: cellBackgroundColor,
+          textAlign: "center",
+          position: "relative",
+        }}
+        ref={ref}
+        id={columnIndex}
+        key={columnIndex}
+        onClick={() => openColorPicker(columnIndex)}
+      ></div>
+      {position !== null &&
+        createPortal(
           <div
-            style={{ display: "contents" }}
-            id={columnIndex}
-            key={columnIndex}
-            onClick={clicked}
+            style={{
+              position: "absolute",
+              top: position.top + position.height - 110,
+              left: position.left + 110,
+              width: position.width + 25,
+              backgroundColor: "white",
+              boxShadow: "0 0 3px rgba(0, 0, 0, 0.3)",
+              padding: 10,
+              margin: 0,
+              zIndex: 1,
+              textAlign: "left",
+            }}
           >
-            {children}
-          </div>
-        );
-      })}
+            <Fragment>
+              <button
+                style={{
+                  backgroundColor: "crimson",
+                  borderRadius: "100%",
+                  height: "40px",
+                  width: "40px",
+                  display: "inline-block",
+                  margin: "5px",
+                }}
+                onClick={() => setColor(columnIndex, "crimson")}
+              ></button>
+              <button
+                style={{
+                  backgroundColor: "olivedrab",
+                  borderRadius: "50%",
+                  height: "40px",
+                  width: "40px",
+                  display: "inline-block",
+                  margin: "5px",
+                }}
+                onClick={() => setColor(columnIndex, "olivedrab")}
+              ></button>
+              <button
+                style={{
+                  backgroundColor: "dodgerblue",
+                  borderRadius: "50%",
+                  height: "40px",
+                  width: "40px",
+                  display: "inline-block",
+                  margin: "5px",
+                }}
+                onClick={() => setColor(columnIndex, "dodgerblue")}
+              ></button>
+              <button
+                style={{
+                  backgroundColor: "deeppink",
+                  borderRadius: "50%",
+                  height: "40px",
+                  width: "40px",
+                  display: "inline-block",
+                  margin: "5px",
+                }}
+                onClick={() => setColor(columnIndex, "deeppink")}
+              ></button>
+              <button
+                style={{
+                  backgroundColor: "gold",
+                  borderRadius: "50%",
+                  height: "40px",
+                  width: "40px",
+                  display: "inline-block",
+                  margin: "5px",
+                }}
+                onClick={() => setColor(columnIndex, "gold")}
+              ></button>
+            </Fragment>
+          </div>,
+          document.getElementById("specialCellContainer")
+        )}
     </Fragment>
   );
 };
 
-const UserInput = ({ columns }) => {
+const UserInput = () => {
   return (
-    <Fragment>
-      <SpecialCell amount={columns} clicked={() => console.log("hello")}>
-        <div
-          style={{
-            borderRadius: "50%",
-            backgroundColor: "#faecd7",
-            textAlign: "center",
-          }}
-        >
-          foo
-        </div>
-      </SpecialCell>
-    </Fragment>
+    <div style={{ display: "contents" }}>
+      <SpecialCell columnIndex={0} />
+      <SpecialCell columnIndex={1} />
+      <SpecialCell columnIndex={2} />
+      <SpecialCell columnIndex={3} />
+    </div>
   );
 };
 
@@ -84,6 +176,7 @@ const Game = ({ columns, rows, secretPattern }) => {
 
         {Array.from({ length: rows }).map((_, rowIndex, { length }) => (
           <div
+            id={"specialCellContainer"}
             style={{
               display: "contents",
             }}
@@ -103,7 +196,7 @@ const Game = ({ columns, rows, secretPattern }) => {
             </div>
 
             {guesses.length === length - rowIndex - 1 ? (
-              <UserInput columns={columns} />
+              <UserInput />
             ) : (
               <Fragment>
                 {Array.from({ length: columns }).map((_, columnIndex) => {
