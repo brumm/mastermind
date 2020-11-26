@@ -11,7 +11,7 @@ const SpecialCell = ({ columnIndex }) => {
   const [cellBackgroundColor, setCellBackgroundColor] = useState("#faecd7");
   const ref = React.useRef(null);
 
-  const setColor = (index, color) => {
+  const setColor = (color) => {
     setCellBackgroundColor(color);
   };
 
@@ -67,7 +67,7 @@ const SpecialCell = ({ columnIndex }) => {
                   display: "inline-block",
                   margin: "5px",
                 }}
-                onClick={() => setColor(columnIndex, "crimson")}
+                onClick={() => setColor("crimson")}
               ></button>
               <button
                 style={{
@@ -78,7 +78,7 @@ const SpecialCell = ({ columnIndex }) => {
                   display: "inline-block",
                   margin: "5px",
                 }}
-                onClick={() => setColor(columnIndex, "olivedrab")}
+                onClick={() => setColor("olivedrab")}
               ></button>
               <button
                 style={{
@@ -89,7 +89,7 @@ const SpecialCell = ({ columnIndex }) => {
                   display: "inline-block",
                   margin: "5px",
                 }}
-                onClick={() => setColor(columnIndex, "dodgerblue")}
+                onClick={() => setColor("dodgerblue")}
               ></button>
               <button
                 style={{
@@ -100,7 +100,7 @@ const SpecialCell = ({ columnIndex }) => {
                   display: "inline-block",
                   margin: "5px",
                 }}
-                onClick={() => setColor(columnIndex, "deeppink")}
+                onClick={() => setColor("deeppink")}
               ></button>
               <button
                 style={{
@@ -111,7 +111,7 @@ const SpecialCell = ({ columnIndex }) => {
                   display: "inline-block",
                   margin: "5px",
                 }}
-                onClick={() => setColor(columnIndex, "gold")}
+                onClick={() => setColor("gold")}
               ></button>
             </Fragment>
           </div>,
